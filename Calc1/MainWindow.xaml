@@ -6,11 +6,22 @@
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBox x:Name="Display" Text="0" IsReadOnly="True" TextAlignment="Right"
+        <Grid Margin="4,2,4,2" Height="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="ExpressionValue" FontSize="15" Foreground="#626A73"
+                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+            <TextBlock x:Name="ExpressionOperator" Grid.Column="1" FontSize="15"
+                       Foreground="#626A73" Margin="12,0,4,0" VerticalAlignment="Center"/>
+        </Grid>
+        <TextBox Grid.Row="1" x:Name="Display" Text="0" IsReadOnly="True" TextAlignment="Right"
                  FontSize="32" Margin="2,2,2,12" Padding="8" Background="White"/>
-        <UniformGrid Grid.Row="1" Rows="5" Columns="4">
+        <UniformGrid Grid.Row="2" Rows="5" Columns="4">
             <Button Content="C" Click="Clear_Click"/>
             <Button Content="⌫" Click="Backspace_Click"/>
             <Button Content="±" Click="Sign_Click"/>

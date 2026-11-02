@@ -22,6 +22,7 @@ namespace Calc1
         private void Digit_Click(object sender, RoutedEventArgs e)
         {
             if (hasError) Reset();
+            if (startNewEntry && pendingOperator == null) ClearExpression();
             string digit = (string)((Button)sender).Content;
             if (startNewEntry || Display.Text == "0") Display.Text = digit;
             else if (Display.Text.Length < 28) Display.Text += digit;
@@ -31,6 +32,7 @@ namespace Calc1
         private void Decimal_Click(object sender, RoutedEventArgs e)
         {
             if (hasError) Reset();
+            if (startNewEntry && pendingOperator == null) ClearExpression();
             if (startNewEntry) Display.Text = "0";
             if (!Display.Text.Contains('.')) Display.Text += ".";
             startNewEntry = false;
@@ -48,14 +50,19 @@ namespace Calc1
                 storedValue = CurrentValue;
             }
             pendingOperator = (string)((Button)sender).Content;
+            ExpressionValue.Text = storedValue.ToString("0.############################", CultureInfo.InvariantCulture);
+            ExpressionOperator.Text = pendingOperator;
             startNewEntry = true;
         }
 
         private void Equals_Click(object sender, RoutedEventArgs e)
         {
             if (hasError || pendingOperator == null || startNewEntry) return;
+            string expression = $"{storedValue.ToString("0.############################", CultureInfo.InvariantCulture)} {pendingOperator} {Display.Text}";
             if (Calculate())
             {
+                ExpressionValue.Text = expression;
+                ExpressionOperator.Text = "＝";
                 pendingOperator = null;
                 startNewEntry = true;
             }
@@ -79,6 +86,7 @@ namespace Calc1
             }
             catch (Exception ex) when (ex is DivideByZeroException || ex is OverflowException)
             {
+                ClearExpression();
                 Display.Text = "エラー";
                 pendingOperator = null;
                 startNewEntry = true;
@@ -89,8 +97,15 @@ namespace Calc1
 
         private void Clear_Click(object sender, RoutedEventArgs e) => Reset();
 
+        private void ClearExpression()
+        {
+            ExpressionValue.Text = "";
+            ExpressionOperator.Text = "";
+        }
+
         private void Reset()
         {
+            ClearExpression();
             Display.Text = "0";
             storedValue = 0;
             pendingOperator = null;
@@ -110,6 +125,7 @@ namespace Calc1
         private void Sign_Click(object sender, RoutedEventArgs e)
         {
             if (hasError) return;
+            if (startNewEntry && pendingOperator == null) ClearExpression();
             if (startNewEntry && pendingOperator != null) Display.Text = "0";
             if (CurrentValue != 0)
                 Display.Text = Display.Text.StartsWith('-') ? Display.Text[1..] : "-" + Display.Text;
